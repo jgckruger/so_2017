@@ -1,0 +1,7 @@
+- Criar um arquivo com as diferenças entre os dois arquivos
+	- Sintaxe diff -u arquivo1 arquivo2 > arquivo.patch
+	$ diff -u shellsimples.c S04_AP_04.1_23.03.2017__shellsimples.c > diff_shell.patch
+- Aplicar o patch o patch
+	- Sintaxe patch < arquivo.patch
+	$ patch < diff_shell.patch
+	- Caso pergunte pelo parâmetro -R só indique que não, ele fará o patch inverso
