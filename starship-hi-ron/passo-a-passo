@@ -1,0 +1,33 @@
+1. Baixar a rom do Starship 1
+    - https://www.emuparadise.me/M.A.M.E._-_Multiple_Arcade_Machine_Emulator_ROMs/Starship_1/17091
+2. Extrair a rom
+3. Descobrir o arquivo que contém o código
+    - O artigo cita o arquivo 7531-02.e3
+4. Dar um hexdump nele
+    - hexdump -C 7531-02.e3 > dump.txt
+    -Da página do man do hexdump
+             -C
+             Canonical hex+ASCII display.  Display the input offset in hexa‐
+             decimal, followed by sixteen space-separated, two column, hexa‐
+             decimal bytes, followed by the same sixteen bytes in %_p format
+             enclosed in ``|'' characters.
+    - A partir daí dá para ver que de fato existe uma string "HI  RON!" no código fonte do jogo
+    - Pode-de desmontar o código da rom com
+    		- ndisasm 7531-02.e3 > ASM-7531-02
+
+
+
+A partir daí resolvi editar o easter egg para dizer "SO  2017"
+
+1. Abrir o 7531-02.e3 
+2. Descobrir e substituir o equivalente hexadecimal das strings
+    - "HI  RON!" - > 4849 2020 524f 4e21
+    - "SO  2017" - > 5330 2020 3230 3137
+3. Instalar o MAME
+    - sudo add-apt-repository ppa:c.falco/mame -y
+    - sudo apt-get update
+    - sudo apt-get install mame
+    - cd ~/.mame && mame -cc
+4. Descobrir que o MAME não roda ROMs modificadas nativamente
+
+
