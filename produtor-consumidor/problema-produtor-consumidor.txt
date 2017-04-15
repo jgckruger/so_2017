@@ -1,0 +1,34 @@
+Definição de Produtor e Consumidor:
+
+De acordo com o artigo em https://www.vivaolinux.com.br/artigo/O-Produtor-e-o-Consumidor
+"O problema do Produtor e o Consumidor (também conhecido como o problema do buffer limitado), consiste em um conjunto de processos que compartilham um mesmo buffer simultaneamente.
+Os processos chamados produtores põem informação no buffer.
+Os processos chamados consumidores retiram informação deste buffer. "
+
+
+
+Problemas decorrentes:
+
+Existem uma série de problemas que são decorrentes dessa definição
+  - Um produtor não poderá produzir mais do que o buffer permite
+  - Um consumidor não poderá consumir se o buffer estiver vazio
+  - Em um determinado momento só se pode ou produzir ou consumir(não se produz/consume meia informação)
+
+Tais problemas ocorrem por as operações de consumo e produção não necessariamente tem o mesmo tempo para executar.
+Além disso o hardware pode executar apenas meia instrução e seguir para uma outra, alterando a ordem de instruções executadas.
+  - Situações onde o sistema trabalha com "time slice" são um exemplo
+Para isso é necessária uma maneira de garantir que
+  - O buffer seja operado unicamente pelo Produtor ou pelo Consumidor em uma faixa de tempo
+  - Caso a operação seja impossível de ser realizada(ex: consumir sem existir o que consumir) ela deixe de afetar o buffer até ser possível
+  - As operações sejam executadas na ordem certa
+
+
+
+Solução para o problema do Produtor e Consumidor
+
+Uma solução possível para o problema é o uso de mutex, um algoritmo derivado do semáforo criado por Edsger Dijkstra.
+Semáforos é um tipo abstrato de dados usado para controlar acesso a um recurso comum à diferentes processos
+Um semáforo binário, implementado usando locks (travas, garantindo que o recurso seja exclusivo) é chamado de mutex.
+Um mutex(Mutual Exclusion) garante que apenas um processo acesse o recurso em um determinado tempo.
+Um produtor/consumidor tem que sua operação será concluida com sucesso, unicamente
+Um produtor/consumidor não ocupará o recurso se não houver como trabalhar nele(ex: produzir com buffer cheio)
