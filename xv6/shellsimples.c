@@ -36,7 +36,6 @@ PARA O SHELL COMPILAR TANTO NO XV6 E NO Linux
 ***************************************************************/
 #ifdef __XV6 // xv6
   #include "types.h" // header com a definição dos tipos usados pela user.h
-
   #include "user.h" // header com os cabeçalhos de syscalls e funções.
   // possui as syscalls aqui usadas: fork, exit, wait, exec
   // possui as funções aqui usadas: strcmp, printf, gets, strlen
@@ -97,7 +96,7 @@ int main( void )
     no processo filho a variável pid recebe 0
     */
 
-
+    
     if( pid == 0 ) // se esse é o processo filho
     #ifdef __XV6
       if( exec( argv[ 0 ], argv ) ) { // se a execução do filho teve algum problema e não retornou 0
