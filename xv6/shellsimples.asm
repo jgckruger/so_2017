@@ -256,7 +256,7 @@ int main( void )
     no processo filho a variável pid recebe 0
     */
 
-
+    
     if( pid == 0 ) // se esse é o processo filho
  1af:	83 7d f0 00          	cmpl   $0x0,-0x10(%ebp)
  1b3:	75 34                	jne    1e9 <main+0x142>
