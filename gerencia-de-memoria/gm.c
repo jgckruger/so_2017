@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int tamMemoria = 100;
+int tamMemoria = 10240;
 
 struct header{
   int tam;
@@ -29,18 +29,17 @@ struct header * atual = listaLivres;
 
   while(atual!=NULL)
   {
-      //if(atual->tam < tam+sizeof(struct header))
-      if(atual->tam < tam)
+      if(atual->tam < tam+sizeof(struct header))
       {
         anterior = atual;
         atual = atual -> prox;
       }
       else
       {
-        //if(atual->tam==(sizeof(struct header)+tam)){
-        if(atual->tam==tam){
+        if(atual->tam==(sizeof(struct header)+tam)){
+        //if(atual->tam==tam) || tam + sizeof(struct header) < atual->tam){
           anterior->prox=atual->prox;
-          atual->tam=tam;
+          //atual->tam=tam;
         }
         else
         {
@@ -77,12 +76,14 @@ void meu_libera(void * ponteiro)
     atual=atual->prox;
   }
   if(endHeader<listaLivres){
+    endHeader->prox=listaLivres;
     listaLivres=(struct header *) endHeader;
-    listaLivres->prox=atual;
+    //listaLivres->prox=atual;
   }
   else{
+    endHeader->prox=anterior->prox;
     anterior->prox = (struct header*) endHeader;
-    ((struct header*) endHeader)->prox = atual;
+    //((struct header*) endHeader)->prox = atual;
   }
   // printf("liberado\n");
   // merge ( anterior, endHeader);
@@ -140,6 +141,7 @@ int main()
   // meu_libera( a9 );
   // mostra_mem();
   a10 =  meu_aloca(3);
+  printf("\n\n\n\n\n\n");
   mostra_livres();
   printf("\n\n\n\n\n\n");
   mostra_mem();
