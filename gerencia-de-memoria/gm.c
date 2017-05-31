@@ -44,7 +44,10 @@ struct header * atual = listaLivres;
         else
         {
           atual->prox=atual+tam+sizeof(struct header);
+          //printf("atual tam%d\n", atual->tam);
           atual->prox->tam=atual->tam-tam-sizeof(struct header);
+          //printf("atual prox tam%d\n", atual->prox->tam);
+          anterior->prox=atual->prox;
           atual->tam=tam;
         }
         if(atual==listaLivres)
@@ -60,8 +63,10 @@ struct header * atual = listaLivres;
 
 void merge(void * anterior, void * posterior)
 {
-  if((((int)anterior+(int)((struct header *)anterior)->tam+sizeof(struct header))==(int)posterior))
-    ((struct header *)anterior)->tam=((struct header *)anterior)->tam+((struct header *)posterior)->tam+sizeof(struct header);
+  if((((int)anterior+(int)((struct header *)anterior)->tam+sizeof(struct header))==(int)posterior)){
+      ((struct header *)anterior)->tam=((struct header *)anterior)->tam+((struct header *)posterior)->tam+sizeof(struct header);
+      ((struct header *)anterior)->prox=((struct header *)posterior)->prox;
+  }
 }
 
 void meu_libera(void * ponteiro)
@@ -70,24 +75,26 @@ void meu_libera(void * ponteiro)
   struct header * anterior = listaLivres;
   struct header * atual = listaLivres;
 
-  while((void *)atual < endHeader)
-  {
-    anterior=atual;
-    atual=atual->prox;
-  }
-  if(endHeader<listaLivres){
+  if((int)endHeader<(int)listaLivres){
     endHeader->prox=listaLivres;
-    listaLivres=(struct header *) endHeader;
+    listaLivres=endHeader;
+    return;
     //listaLivres->prox=atual;
   }
-  else{
-    endHeader->prox=anterior->prox;
-    anterior->prox = (struct header*) endHeader;
-    //((struct header*) endHeader)->prox = atual;
+
+  while(atual < endHeader)
+  {
+    anterior=atual;
+    //printf("pao %d\n",atual->tam);
+    atual=atual->prox;
   }
+
+  endHeader->prox=anterior->prox;
+  anterior->prox = (struct header*) endHeader;
+  //((struct header*) endHeader)->prox = atual;
   // printf("liberado\n");
-  // merge ( anterior, endHeader);
-  // merge ( endHeader, atual);
+  merge ( anterior, endHeader);
+  merge ( endHeader, atual);
 }
 
 void mostra_mem(){
@@ -96,8 +103,8 @@ void mostra_mem(){
   while(tam<tamMemoria)
   {
     printf("bloco de %d bytes + %d bytes de header = %d bytes\n", atual->tam,
-      sizeof(struct header), atual->tam + sizeof(struct header));
-      tam+=atual->tam+sizeof(struct header);
+    sizeof(struct header), atual->tam + sizeof(struct header));
+    tam+=atual->tam+sizeof(struct header);
     atual=atual->tam+sizeof(struct header)+atual;
   }
 }
@@ -145,6 +152,15 @@ int main()
   mostra_livres();
   printf("\n\n\n\n\n\n");
   mostra_mem();
+  printf("\n\n\n\n\n\n");
+  meu_libera(a3);
+  printf("\n\n\n\n\n\n");
+  mostra_livres();
+  printf("\n\n\n\n\n\n");
+  mostra_mem();
+  printf("\n\n\n\n\n\n");
+  meu_libera(a10);
+
   // a11 =  meu_aloca(20);
   // mostra_mem();
   // a12 =  meu_aloca(12);

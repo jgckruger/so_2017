@@ -17,12 +17,17 @@ void imprime();
 
 int main(void)
 {
-    void *p,*q;
+    void *p,*q, *t;
     imprime();
     inicializa_memoria(100);
     p = meu_aloca(12);
     q = meu_aloca(12);
-    printf("\np = %d", p);
+
+    imprime();
+
+    meu_desaloca(q);
+    t=meu_aloca(5);
+    meu_desaloca(p);
     imprime();
     return 0;
 }
@@ -42,58 +47,69 @@ void inicializa_memoria(int size)
 void meu_desaloca(void* p)
 {
     struct hole* current_hole,*prev_hole,*next_hole;
-    printf("\n%d\n",p);
-    current_hole = p - hole_size;
+    void *aux;
+    aux = p - hole_size;
+    current_hole = aux;
     prev_hole = current_hole->prev;
     next_hole = current_hole->next;
-    current_hole->tam = 1;
-    printf("\n%d\n",current_hole);
-    /*if(next_hole != NULL)
+    current_hole->tam = (-1)*current_hole->tam;
+    if(next_hole != NULL)
      {
-        current_hole->next = next_hole->next;
+        if(next_hole -> tam > 0)
+        {
         current_hole->tam = current_hole->tam +hole_size + next_hole->tam;
+        current_hole->next = next_hole->next;
         if(current_hole->next != NULL)
         {
             current_hole->next->prev = current_hole;
         }
+      }
     }
     if(prev_hole != NULL)
     {
-        prev_hole->next = current_hole->next;
+        if(prev_hole->tam > 0){
         prev_hole->tam = prev_hole->tam + current_hole->tam + hole_size;
+        prev_hole->next = current_hole->next;
         if(current_hole->next != NULL)
         {
             current_hole->next->prev = prev_hole;
         }
-    }*/
+      }
+    }
 }
 void* meu_aloca(int size)
 {
     struct hole *current_hole,*prev_hole,*next_hole;
+    void *aux;
     current_hole = hole_list;
     while(current_hole != NULL)
     {
         if(current_hole->tam == size)
         {
+            aux = current_hole;
            current_hole->tam = (-1)*current_hole->tam;
-           return (current_hole + hole_size);
+           return (aux + hole_size);
         }
         if(current_hole->tam > (size + hole_size))
         {
             prev_hole = current_hole;
             next_hole = current_hole->next;
-            current_hole = prev_hole+ prev_hole->tam -size -hole_size;
+            printf("\n%d\n\n",current_hole);
+            aux = (void*)prev_hole + prev_hole->tam -size -hole_size;
+            printf("\n%d\n\n",aux);
+            current_hole = aux;
+
             current_hole->tam = -size;
             current_hole->next = next_hole;
             current_hole->prev = prev_hole;
-            prev_hole->next=current_hole;
+            prev_hole->next = current_hole;
             prev_hole->tam = prev_hole->tam - size - hole_size;
             if(next_hole != NULL)
             {
                 next_hole->prev = current_hole;
             }
-            printf("\n%d\n",(int)current_hole+hole_size);
-            return (int)(current_hole + hole_size);
+            printf("\n%d\n",current_hole+hole_size);
+            return (aux + hole_size);
         }
         current_hole = current_hole->next;
     }
@@ -105,7 +121,7 @@ void imprime()
     current_hole = hole_list;
     while(current_hole != NULL)
     {
-        printf("\nEndere�o do buraco -> %d\nTamanho do buraco -> %d\nProximo buraco -> %d\nBuraco anterior -> %d\n\n",(int)current_hole,current_hole->tam,(int)current_hole->next,(int)current_hole->prev);
+        printf("\nEndere�o do buraco -> %d\nTamanho do buraco -> %d\nProximo buraco -> %d\nBuraco anterior -> %d\n\n",current_hole,current_hole->tam,current_hole->next,current_hole->prev);
         current_hole = current_hole->next;
     }
 }
