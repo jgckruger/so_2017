@@ -31,24 +31,36 @@ struct header * atual = listaLivres;
   {
       if(atual->tam < tam+sizeof(struct header))
       {
+        // printf("procurando lugar");
         anterior = atual;
         atual = atual -> prox;
       }
       else
       {
+        printf("alocado %d\n", tam);
         if(atual->tam==(sizeof(struct header)+tam)){
-        //if(atual->tam==tam) || tam + sizeof(struct header) < atual->tam){
+          //if(atual->tam==tam) || tam + sizeof(struct header) < atual->tam){
+          //printf("perfect fit");
           anterior->prox=atual->prox;
+          atual->prox=NULL;
           //atual->tam=tam;
         }
         else
         {
-          atual->prox=atual+tam+sizeof(struct header);
+          //printf("atual tam %d\n", atual->tam);
+          //printf("ajustando");
+          struct header * aux = atual->prox;
+          struct header * novoBloco = atual+tam+sizeof(struct header);
+          anterior->prox=novoBloco;
+          novoBloco->prox=aux;
+          //atual->prox=NULL;
+          //printf("atual prox tam %d", atual->prox->tam);
           //printf("atual tam%d\n", atual->tam);
-          atual->prox->tam=atual->tam-tam-sizeof(struct header);
-          //printf("atual prox tam%d\n", atual->prox->tam);
-          anterior->prox=atual->prox;
+          novoBloco->tam=atual->tam-sizeof(struct header)-tam;
           atual->tam=tam;
+          //printf("atual prox tam %d", atual->prox->tam);
+          //printf("atual prox tam%d\n", atual->prox->tam);
+          //printf("atual tam %d \n", atual->tam);
         }
         if(atual==listaLivres)
           listaLivres=atual->prox;
@@ -61,12 +73,17 @@ struct header * atual = listaLivres;
   printf("Impossivel alocar espaço\n");
 }
 
-void merge(void * anterior, void * posterior)
+int merge(struct header * anterior, struct header * posterior)
 {
-  if((((int)anterior+(int)((struct header *)anterior)->tam+sizeof(struct header))==(int)posterior)){
-      ((struct header *)anterior)->tam=((struct header *)anterior)->tam+((struct header *)posterior)->tam+sizeof(struct header);
-      ((struct header *)anterior)->prox=((struct header *)posterior)->prox;
+  //printf("%d %d %d\n", anterior, posterior, posterior-anterior-anterior->tam-sizeof(struct header));
+  if((posterior-anterior-anterior->tam-sizeof(struct header))==0)
+  {
+    anterior->prox=posterior->prox;
+    anterior->tam=sizeof(struct header)+anterior->tam+posterior->tam;
+    //printf("%d novo bloco\n", sizeof(struct header)+anterior->tam+posterior->tam);
+    return 1;
   }
+  return 0;
 }
 
 void meu_libera(void * ponteiro)
@@ -78,6 +95,8 @@ void meu_libera(void * ponteiro)
   if((int)endHeader<(int)listaLivres){
     endHeader->prox=listaLivres;
     listaLivres=endHeader;
+    printf("liberado %d\n", endHeader->tam);
+    merge(endHeader, endHeader->prox);
     return;
     //listaLivres->prox=atual;
   }
@@ -92,9 +111,11 @@ void meu_libera(void * ponteiro)
   endHeader->prox=anterior->prox;
   anterior->prox = (struct header*) endHeader;
   //((struct header*) endHeader)->prox = atual;
-  // printf("liberado\n");
-  merge ( anterior, endHeader);
-  merge ( endHeader, atual);
+  printf("liberado %d\n", endHeader->tam);
+  if(merge ( (struct header *)anterior,(struct header *) endHeader))
+      merge ((struct header *) anterior, (struct header *)atual);
+  else
+    merge ((struct header *) endHeader, (struct header *)atual);
 }
 
 void mostra_mem(){
@@ -119,9 +140,10 @@ void mostra_livres()
   }
 }
 
+int a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13;
 int main()
 {
-  int a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13;
+  int teste;
   inicializa_mem();
   //mostra_mem();
   a1  =  meu_aloca(10);
@@ -167,4 +189,34 @@ int main()
   // mostra_mem();
   // a13 =  meu_aloca(40);
   // mostra_mem();
+  printf("\n\n\n\n\n\n");printf("\n\n\n\n\n\n");
+  //printf("aloca 100\n");
+  teste = meu_aloca(100);
+  mostra_livres();
+  printf("\n\n\n\n\n\n");
+  mostra_mem();
+  printf("\n\n\n\n\n\n");
+  //printf("libera 100\n");
+  meu_libera(teste);
+  mostra_livres();
+  printf("\n\n\n\n\n\n");
+  mostra_mem();
+  printf("\n\n\n\n\n\n");
+  //printf("aloca 12\n");
+  teste = meu_aloca(12);
+  mostra_livres();
+  printf("\n\n\n\n\n\n");
+  mostra_mem();
+  printf("\n\n\n\n\n\n");
+  meu_libera(teste);
+  mostra_livres();
+  printf("\n\n\n\n\n\n");
+  mostra_mem();
+  printf("\n\n\n\n\n\n");
+  meu_libera(a1);
+  mostra_livres();
+  printf("\n\n\n\n\n\n");
+  mostra_mem();
+  printf("\n\n\n\n\n\n");
+
 }
