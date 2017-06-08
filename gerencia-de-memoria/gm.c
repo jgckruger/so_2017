@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+// Autor: João Gabriel Corrêa Krüger
 int tamMemoria = 10240;
 
 struct header{

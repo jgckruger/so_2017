@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+// Autor: Michel Hoekstra
 
 struct hole{
     int tam;
