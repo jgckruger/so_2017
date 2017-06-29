@@ -1,0 +1,192 @@
+10224 0
+atual->tam 10224
+bloco de 10224
+alocado 10
+atual->tam 10198
+bloco de 10198
+alocado 5
+atual->tam 10177
+bloco de 10177
+alocado 20
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 5 bytes + 16 bytes de header = 21 bytes
+bloco de 20 bytes + 16 bytes de header = 36 bytes
+bloco de 10141 bytes + 16 bytes de header = 10157 bytes
+
+
+
+
+
+
+Tamanho do bloco livre: 10141
+liberado 5
+
+
+
+
+
+
+Tamanho do bloco livre: 5
+Tamanho do bloco livre: 10141
+
+
+
+
+
+
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 5 bytes + 16 bytes de header = 21 bytes
+bloco de 20 bytes + 16 bytes de header = 36 bytes
+bloco de 10141 bytes + 16 bytes de header = 10157 bytes
+atual->tam 5
+atual->tam 10141
+bloco de 10141
+alocado 3
+
+
+
+
+
+
+Tamanho do bloco livre: 5
+Tamanho do bloco livre: 10122
+
+
+
+
+
+
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 5 bytes + 16 bytes de header = 21 bytes
+bloco de 20 bytes + 16 bytes de header = 36 bytes
+bloco de 3 bytes + 16 bytes de header = 19 bytes
+bloco de 10122 bytes + 16 bytes de header = 10138 bytes
+
+
+
+
+
+
+liberado 20
+
+
+
+
+
+
+Tamanho do bloco livre: 41
+Tamanho do bloco livre: 10122
+
+
+
+
+
+
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 41 bytes + 16 bytes de header = 57 bytes
+bloco de 3 bytes + 16 bytes de header = 19 bytes
+bloco de 10122 bytes + 16 bytes de header = 10138 bytes
+
+
+
+
+
+
+liberado 3
+
+
+
+
+
+
+
+
+
+
+
+
+atual->tam 10198
+bloco de 10198
+alocado 100
+Tamanho do bloco livre: 10082
+
+
+
+
+
+
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 100 bytes + 16 bytes de header = 116 bytes
+bloco de 10082 bytes + 16 bytes de header = 10098 bytes
+
+
+
+
+
+
+liberado 100
+Tamanho do bloco livre: 10198
+
+
+
+
+
+
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 10198 bytes + 16 bytes de header = 10214 bytes
+
+
+
+
+
+
+atual->tam 10198
+bloco de 10198
+alocado 12
+Tamanho do bloco livre: 10170
+
+
+
+
+
+
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 12 bytes + 16 bytes de header = 28 bytes
+bloco de 10170 bytes + 16 bytes de header = 10186 bytes
+
+
+
+
+
+
+liberado 12
+Tamanho do bloco livre: 10198
+
+
+
+
+
+
+bloco de 10 bytes + 16 bytes de header = 26 bytes
+bloco de 10198 bytes + 16 bytes de header = 10214 bytes
+
+
+
+
+
+
+liberado 10
+Tamanho do bloco livre: 10224
+
+
+
+
+
+
+bloco de 10224 bytes + 16 bytes de header = 10240 bytes
+
+
+
+
+
+

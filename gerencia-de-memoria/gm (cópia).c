@@ -13,8 +13,6 @@ struct header{
 struct header * listaLivres;
 void * endBaseMemoria;
 
-struct header * inicioNext;
-
 void inicializa_mem()
 {
   listaLivres = endBaseMemoria = malloc(tamMemoria);       // endereço base da memória
@@ -22,142 +20,26 @@ void inicializa_mem()
                                                                           // atribui a ela o tamanho de espaço vazio
   ((struct header *)listaLivres)->prox=NULL;                                // nao existe próximo bloco
    printf("%d %d\n", listaLivres->tam, (int)listaLivres->prox);             // debug
-
-   // para o next fit
-   inicioNext = listaLivres;
-}
-
-void firstFit(struct header ** anterior, struct header ** atual, int tam){
-  while(atual!=NULL)
-  {
-      printf("atual->tam %d\n", (*atual)->tam);
-      if((* atual)->tam < tam+sizeof(struct header))
-      {
-        // printf("procurando lugar");
-        *anterior = *atual;
-        *atual = (*atual )-> prox;
-      }
-      else
-        return;
-  }
-  atual = NULL; anterior = NULL;
-}
-
-void worstFit(struct header ** ant, struct header ** at, int tam){
-  struct header ** anteriorMaior = ant;
-  struct header ** maior = at;
-
-  struct header * atual = *at;
-  struct header * anterior = *ant;
-  int maiorTam = -1;
-  while(atual!=NULL)
-  {
-    printf("atual->tam %d\n", atual->tam);
-    if(atual->tam < tam+sizeof(struct header))
-    {
-      anterior = atual;
-      atual = atual->prox;
-    }
-    else // cabe
-    {
-      if(atual->tam > maiorTam) // maior buraco achado
-      {
-        maiorTam = atual->tam;
-        *maior = atual;
-        *anteriorMaior = anterior;
-      }
-      anterior = atual;
-      atual = atual->prox;
-    }
-  }
-  if(maiorTam != -1) // achou
-  {
-    *ant = *anteriorMaior;
-    *at = *maior;
-  }
-  else
-  {
-    *at=NULL;
-    *ant=NULL;
-  }
-}
-
-void bestFit(struct header ** ant, struct header ** at, int tam){
-  struct header ** anteriorMelhor = ant;
-  struct header ** melhor = at;
-
-  struct header * atual = *at;
-  struct header * anterior = *ant;
-
-  int found = 0;
-
-  while(atual!=NULL)
-  {
-    printf("atual->tam %d\n", atual->tam);
-    if(atual->tam < tam+sizeof(struct header))
-    {
-      anterior = atual;
-      atual = atual->prox;
-    }
-    else // cabe
-    {
-      if(!found || (((*melhor)->tam-tam)>(atual->tam-tam))) // maior buraco achado
-      {
-        *melhor = atual;
-        *anteriorMelhor = anterior;
-        found = 1;
-      }
-      anterior = atual;
-      atual = atual->prox;
-    }
-  }
-  if(found) // achou
-  {
-    *ant = *anteriorMelhor;
-    *at = *melhor;
-  }
-  else
-  {
-    *at=NULL;
-    *ant=NULL;
-  }
-}
-
-// NÃO FUNCIONA AINDA
-void nextFit(struct header ** anterior, struct header ** atual, int tam){
-  int passou = 0;
-  struct header * inicio = inicioNext;
-  *anterior=inicioNext;
-  *atual=inicioNext;
-
-  while(atual!=NULL)
-  {
-      printf("atual->tam %d\n", (*atual)->tam);
-      if((* atual)->tam < tam+sizeof(struct header))
-      {
-        // printf("procurando lugar");
-        *anterior = *atual;
-        *atual = (*atual )-> prox;
-      }
-      else
-        return;
-  }
-  atual = NULL; anterior = NULL;
 }
 
 
 void * meu_aloca(int tam){
-// aloca de acordo com o algoritmo (first, best, worst, next)
+//         aloco de acordo com o algoritmo (first, best, worst, next)
 struct header * anterior = listaLivres;
 struct header * atual = listaLivres;
 
 
-  // comentar todos os fits menos um
-  worstFit(&anterior, &atual, tam);
-  //firstFit(&anterior, &atual, tam);
-  //bestFit(&anterior, &atual, tam);
-  if(atual!=NULL){
-        printf("bloco de %d\nalocado %d\n", atual->tam, tam);
+  while(atual!=NULL)
+  {
+      if(atual->tam < tam+sizeof(struct header))
+      {
+        // printf("procurando lugar");
+        anterior = atual;
+        atual = atual -> prox;
+      }
+      else
+      {
+        printf("alocado %d\n", tam);
         if(atual->tam==(sizeof(struct header)+tam)){
           //if(atual->tam==tam) || tam + sizeof(struct header) < atual->tam){
           //printf("perfect fit");
@@ -188,6 +70,7 @@ struct header * atual = listaLivres;
         // printf("alocado %d tamanho %d\n", atual, atual->tam );
         atual->prox=NULL;
         return (int)atual+sizeof(struct header); // retorna o endereço base onde está a memória alocada
+      }
   }
   printf("Impossivel alocar espaço\n");
 }

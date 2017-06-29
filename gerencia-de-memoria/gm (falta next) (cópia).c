@@ -13,8 +13,6 @@ struct header{
 struct header * listaLivres;
 void * endBaseMemoria;
 
-struct header * inicioNext;
-
 void inicializa_mem()
 {
   listaLivres = endBaseMemoria = malloc(tamMemoria);       // endereço base da memória
@@ -22,9 +20,6 @@ void inicializa_mem()
                                                                           // atribui a ela o tamanho de espaço vazio
   ((struct header *)listaLivres)->prox=NULL;                                // nao existe próximo bloco
    printf("%d %d\n", listaLivres->tam, (int)listaLivres->prox);             // debug
-
-   // para o next fit
-   inicioNext = listaLivres;
 }
 
 void firstFit(struct header ** anterior, struct header ** atual, int tam){
@@ -123,39 +118,15 @@ void bestFit(struct header ** ant, struct header ** at, int tam){
   }
 }
 
-// NÃO FUNCIONA AINDA
-void nextFit(struct header ** anterior, struct header ** atual, int tam){
-  int passou = 0;
-  struct header * inicio = inicioNext;
-  *anterior=inicioNext;
-  *atual=inicioNext;
-
-  while(atual!=NULL)
-  {
-      printf("atual->tam %d\n", (*atual)->tam);
-      if((* atual)->tam < tam+sizeof(struct header))
-      {
-        // printf("procurando lugar");
-        *anterior = *atual;
-        *atual = (*atual )-> prox;
-      }
-      else
-        return;
-  }
-  atual = NULL; anterior = NULL;
-}
-
 
 void * meu_aloca(int tam){
-// aloca de acordo com o algoritmo (first, best, worst, next)
+//         aloco de acordo com o algoritmo (first, best, worst, next)
 struct header * anterior = listaLivres;
 struct header * atual = listaLivres;
 
-
-  // comentar todos os fits menos um
-  worstFit(&anterior, &atual, tam);
+  //worstFit(&anterior, &atual, tam);
   //firstFit(&anterior, &atual, tam);
-  //bestFit(&anterior, &atual, tam);
+  bestFit(&anterior, &atual, tam);
   if(atual!=NULL){
         printf("bloco de %d\nalocado %d\n", atual->tam, tam);
         if(atual->tam==(sizeof(struct header)+tam)){
