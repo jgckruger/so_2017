@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define ehNext 1
+
 
 // Autor: João Gabriel Corrêa Krüger
 int tamMemoria = 10240;
+
+
 
 struct header{
   int tam;
@@ -24,7 +28,9 @@ void inicializa_mem()
    printf("%d %d\n", listaLivres->tam, (int)listaLivres->prox);             // debug
 
    // para o next fit
+   #ifdef ehNext
    inicioNext = listaLivres;
+   #endif
 }
 
 void firstFit(struct header ** anterior, struct header ** atual, int tam){
@@ -125,11 +131,6 @@ void bestFit(struct header ** ant, struct header ** at, int tam){
 
 // NÃO FUNCIONA AINDA
 void nextFit(struct header ** anterior, struct header ** atual, int tam){
-  int passou = 0;
-  struct header * inicio = inicioNext;
-  *anterior=inicioNext;
-  *atual=inicioNext;
-
   while(atual!=NULL)
   {
       printf("atual->tam %d\n", (*atual)->tam);
@@ -149,13 +150,32 @@ void nextFit(struct header ** anterior, struct header ** atual, int tam){
 void * meu_aloca(int tam){
 // aloca de acordo com o algoritmo (first, best, worst, next)
 struct header * anterior = listaLivres;
-struct header * atual = listaLivres;
+ struct header * atual = listaLivres;
+
+// SOMENTE PARA O NEXT FIT
+#ifdef ehNext
+anterior = inicioNext;
+atual = inicioNext;
+#endif
+
 
 
   // comentar todos os fits menos um
-  worstFit(&anterior, &atual, tam);
+  //worstFit(&anterior, &atual, tam);
   //firstFit(&anterior, &atual, tam);
   //bestFit(&anterior, &atual, tam);
+  //para o next fit
+  nextFit(&anterior, &atual, tam);
+  // SOMENTE PARA O NEXT FIT
+  #ifdef ehNext
+  if(atual==NULL)
+  {
+    printf("nao achou até o fim\n");
+    struct header * anterior = listaLivres;
+    struct header * atual = listaLivres;
+    nextFit(&anterior, &atual, tam);
+  }
+  #endif
   if(atual!=NULL){
         printf("bloco de %d\nalocado %d\n", atual->tam, tam);
         if(atual->tam==(sizeof(struct header)+tam)){
@@ -167,23 +187,44 @@ struct header * atual = listaLivres;
         }
         else
         {
-          //printf("atual tam %d\n", atual->tam);
-          //printf("ajustando");
+          printf("ant tam %d\n", anterior->tam);
+          printf("atual tam %d\n", atual->tam);
+          // printf("ajustando");
           struct header * aux = atual->prox;
           struct header * novoBloco = atual+tam+sizeof(struct header);
+          // SOMENTE PARA O NEXT FIT
+            //printf ("pao\n");
+            #ifdef ehNext
+          if(anterior!= listaLivres && anterior==atual)
+          {
+            anterior=listaLivres;
+            while(anterior!=NULL && anterior->prox != atual){
+              anterior=anterior->prox;
+                printf ("pao\n");
+            }
+          }
+          #endif
+
           anterior->prox=novoBloco;
           novoBloco->prox=aux;
+
           //atual->prox=NULL;
-          //printf("atual prox tam %d", atual->prox->tam);
-          //printf("atual tam%d\n", atual->tam);
+          // printf("atual prox tam %d", atual->prox->tam);
+          // printf("atual tam%d\n", atual->tam);
           novoBloco->tam=atual->tam-sizeof(struct header)-tam;
           atual->tam=tam;
-          //printf("atual prox tam %d", atual->prox->tam);
-          //printf("atual prox tam%d\n", atual->prox->tam);
-          //printf("atual tam %d \n", atual->tam);
+          // printf("atual prox tam %d", atual->prox->tam);
+          // printf("atual prox tam%d\n", atual->prox->tam);
+          // printf("atual tam %d \n", atual->tam);
         }
         if(atual==listaLivres)
           listaLivres=atual->prox;
+        //SOMENTE PARA O NEXT FIT
+        #ifdef ehNext
+        inicioNext=inicioNext->prox;
+        if(inicioNext==NULL)
+             inicioNext=listaLivres;
+        #endif
 
         // printf("alocado %d tamanho %d\n", atual, atual->tam );
         atual->prox=NULL;
@@ -199,6 +240,12 @@ int merge(struct header * anterior, struct header * posterior)
   {
     anterior->prox=posterior->prox;
     anterior->tam=sizeof(struct header)+anterior->tam+posterior->tam;
+    #ifdef ehNext
+    if(inicioNext==posterior){
+      inicioNext = anterior;
+      inicioNext->prox = posterior->prox;
+    }
+    #endif
     //printf("%d novo bloco\n", sizeof(struct header)+anterior->tam+posterior->tam);
     return 1;
   }
@@ -210,6 +257,10 @@ void meu_libera(void * ponteiro)
   struct header * endHeader = ponteiro-sizeof(struct header);
   struct header * anterior = listaLivres;
   struct header * atual = listaLivres;
+
+  //printf("123 listaLivres %d\n inicioNext %d\n", listaLivres, inicioNext);
+  //inicioNext=listaLivres;
+  //printf("321 listaLivres %d\n inicioNext %d\n", listaLivres, inicioNext);
 
   if((int)endHeader<(int)listaLivres){
     endHeader->prox=listaLivres;
@@ -231,10 +282,16 @@ void meu_libera(void * ponteiro)
   anterior->prox = (struct header*) endHeader;
   //((struct header*) endHeader)->prox = atual;
   printf("liberado %d\n", endHeader->tam);
-  if(merge ( (struct header *)anterior,(struct header *) endHeader))
+
+  if(merge ( (struct header *)anterior,(struct header *) endHeader)){
       merge ((struct header *) anterior, (struct header *)atual);
+  }
   else
     merge ((struct header *) endHeader, (struct header *)atual);
+
+    //printf("123 listaLivres %d\n inicioNext %d\n", listaLivres, inicioNext);
+    //inicioNext=listaLivres;
+    //printf("321 listaLivres %d\n inicioNext %d\n", listaLivres, inicioNext);
 }
 
 void mostra_mem(){
@@ -301,6 +358,11 @@ int main()
   mostra_mem();
   printf("\n\n\n\n\n\n");
   meu_libera(a10);
+  printf("\n\n\n\n\n\n");
+  mostra_livres();
+  printf("\n\n\n\n\n\n");
+  mostra_mem();
+  printf("\n\n\n\n\n\n");
 
   // a11 =  meu_aloca(20);
   // mostra_mem();
@@ -321,8 +383,8 @@ int main()
   printf("\n\n\n\n\n\n");
   mostra_mem();
   printf("\n\n\n\n\n\n");
-  //printf("aloca 12\n");
-  teste = meu_aloca(12);
+  printf("aloca 12\n");
+  //teste = meu_aloca(12);
   mostra_livres();
   printf("\n\n\n\n\n\n");
   mostra_mem();
@@ -332,7 +394,7 @@ int main()
   printf("\n\n\n\n\n\n");
   mostra_mem();
   printf("\n\n\n\n\n\n");
-  meu_libera(a1);
+  //meu_libera(a1);
   mostra_livres();
   printf("\n\n\n\n\n\n");
   mostra_mem();
