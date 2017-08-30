@@ -38,7 +38,7 @@ static int pesquisa(const char *arg, const char *path, const char *raiz)
               strcat(pathDir,dp->d_name);
               stat(pathDir, &infoArquivo);
               (void) printf("Achado:\n diretorio: %s/%s \n tipo:%d\n tamanho: %ld bytes\n numero de blocos: %ld blocos\n tamanho de bloco: %ld bytes\n tamanho em disco: %ld bytes\n",
-              path, dp->d_name, dp->d_type, infoArquivo.st_size, infoArquivo.st_blocks, infoArquivo.st_blksize, infoArquivo.st_blocks*512);//* infoArquivo.st_blksize);
+              path, dp->d_name, dp->d_type, infoArquivo.st_size, infoArquivo.st_blocks, infoArquivo.st_blksize, infoArquivo.st_blocks*512);
               //(void) printf("%s/%s \ntipo:%d\n", path, dp->d_name, dp->d_type);
               (void) closedir(dirpont);
               return 1;
