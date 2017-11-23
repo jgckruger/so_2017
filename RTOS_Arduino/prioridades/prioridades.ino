@@ -54,7 +54,7 @@ void setup() {
     ,  NULL                        // Parâmetro opcional, passa handler pra task criada
     );      
 
-  // Now the task scheduler, which takes over control of scheduling individual tasks, is automatically started.
+  // SCHEDULER ENTRA EM AÇÃO NO FINAL DO SETUP, GERENCIANDO QUAL ENTRA EM EXECUÇÃO
 }
 
 void loop()
